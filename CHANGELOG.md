@@ -1,3 +1,18 @@
+# v2024.04.03
+
+## What's Changed
+
+- Remove automated PR against salt repo at release by @ScriptAutomate in https://github.com/saltstack/salt-bootstrap/pull/1984
+- Update actions by @twangboy in https://github.com/saltstack/salt-bootstrap/pull/1985
+- Fix DEBIAN Keyring url by @Dudek-AMS in https://github.com/saltstack/salt-bootstrap/pull/1983
+- Fix script to support installing RC on Windows by @twangboy in https://github.com/saltstack/salt-bootstrap/pull/1993
+
+## New Contributors
+
+- @Dudek-AMS made their first contribution in https://github.com/saltstack/salt-bootstrap/pull/1983
+
+**Full Changelog**: https://github.com/saltstack/salt-bootstrap/compare/v2024.01.04...v2024.04.03
+
 # v2024.01.04
 
 ## What's Changed
@@ -565,7 +580,7 @@
 - add apt-transport-https for ubuntu. (epcim) #896
 - Fix expanding shell script position parameters with nounset enabled. (vutny) #895
 - RFC: Add tests for bootstrap-salt.ps1. (themalkolm) #893
-- Keep original name of salt executable executable. (themalkolm) #857
+- Keep original name of salt executable. (themalkolm) #857
 
 # v2016.06.27:
 

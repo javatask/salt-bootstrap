@@ -23,7 +23,7 @@
 #======================================================================================================================
 set -o nounset                              # Treat unset variables as an error
 
-__ScriptVersion="2024.01.04"
+__ScriptVersion="2024.04.03"
 __ScriptName="bootstrap-salt.sh"
 
 __ScriptFullName="$0"
@@ -3659,10 +3659,10 @@ __install_saltstack_debian_repository() {
     __apt_get_install_noinput ${__PACKAGES} || return 1
 
     # amd64 is just a part of repository URI, 32-bit pkgs are hosted under the same location
-    SALTSTACK_DEBIAN_URL="${HTTP_VAL}://${_REPO_URL}/${__PY_VERSION_REPO}/debian/${DEBIAN_RELEASE}/${__REPO_ARCH}/${STABLE_REV}"
+    SALTSTACK_DEBIAN_URL="${HTTP_VAL}://${_REPO_URL}/${__PY_VERSION_REPO}/debian/${DEBIAN_RELEASE}/${__REPO_ARCH}"
     echo "$__REPO_ARCH_DEB $SALTSTACK_DEBIAN_URL $DEBIAN_CODENAME main" > "/etc/apt/sources.list.d/salt.list"
 
-    __apt_key_fetch "$SALTSTACK_DEBIAN_URL/salt-archive-keyring.gpg" || return 1
+    __apt_key_fetch "$SALTSTACK_DEBIAN_URL/SALT-PROJECT-GPG-PUBKEY-2023.gpg" || return 1
 
     __wait_for_apt apt-get update || return 1
 }
