@@ -51,6 +51,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6.10
+          ## ruby-version: 3.3.4
           bundler-cache: true
 
       - name: Install Chef
@@ -79,10 +80,10 @@ jobs:
           winrm set winrm/config/service '@{AllowUnencrypted="True"}'
           env
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: "3.10"
 
       - name: Install Python Dependencies
         run: |
@@ -92,16 +93,19 @@ jobs:
       - name: Create Test Instance
         run: |
           bundle exec kitchen create ${{ matrix.instance }}-${{ inputs.distro-slug }}
+          sleep 2
 
       - name: Test Bootstrap
         run: |
           env
           bundle exec kitchen verify ${{ matrix.instance }}-${{ inputs.distro-slug }}
+          sleep 2
 
       - name: Destroy Test Instance
         if: always()
         run: |
           bundle exec kitchen destroy ${{ matrix.instance }}-${{ inputs.distro-slug }}
+          sleep 2
 
       - name: Set Exit Status
         if: always()

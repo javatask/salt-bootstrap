@@ -28,6 +28,14 @@ provisioner:
     mv /tmp/auto-accept-keys.conf /etc/salt/master.d/auto-accept-keys.conf
     sh -c 't=$(shuf -i 1-15 -n 1); echo Sleeping $t seconds; sleep $t'
 
+
+##  - name: amazon-2023
+##    driver:
+##      image: amazonlinux:2023
+##      provision_command:
+##        - yum -y install --allowerasing procps-ng curl
+##        - echo "PubkeyAcceptedAlgorithms +ssh-rsa" | tee -a /etc/ssh/sshd_config
+
 platforms:
   - name: almalinux-9
     driver:
@@ -40,12 +48,6 @@ platforms:
     driver:
       image: amazonlinux:2
       platform: rhel
-      provision_command:
-        - yum -y install procps-ng
-  - name: amazon-2023
-    driver:
-      image: amazonlinux:2023
-      platform: fedora
       provision_command:
         - yum -y install procps-ng
   - name: arch
@@ -63,32 +65,22 @@ platforms:
         - dnf -y install crypto-policies-scripts procps-ng
         - update-crypto-policies --set DEFAULT:SHA1
         - echo "PubkeyAcceptedAlgorithms +ssh-rsa" | tee -a /etc/ssh/sshd_config
-  - name: centos-stream8
-    driver:
-      image: quay.io/centos/centos:stream8
-  - name: centos-7
-  - name: debian-9
-    driver:
-      run_command: /lib/systemd/systemd
-  - name: debian-10
-    driver:
-      run_command: /lib/systemd/systemd
   - name: debian-11
     driver:
       image: debian:bullseye
       run_command: /lib/systemd/systemd
-  - name: fedora-35
+  - name: debian-12
+    driver:
+      image: debian:bookworm
+      run_command: /lib/systemd/systemd
+      provision_command:
+        - echo "PubkeyAcceptedAlgorithms +ssh-rsa" | tee -a /etc/ssh/sshd_config
+  - name: fedora-39
     driver:
       provision_command: &fedora_provision_command
         - dnf -y install procps-ng crypto-policies-scripts
         - update-crypto-policies --set LEGACY
-  - name: fedora-36
-    driver:
-      provision_command: *fedora_provision_command
-  - name: fedora-37
-    driver:
-      provision_command: *fedora_provision_command
-  - name: fedora-38
+  - name: fedora-40
     driver:
       provision_command: *fedora_provision_command
   - name: gentoo
@@ -128,74 +120,46 @@ platforms:
         - dnf -y install crypto-policies-scripts procps-ng
         - update-crypto-policies --set DEFAULT:SHA1
         - echo "PubkeyAcceptedAlgorithms +ssh-rsa" | tee -a /etc/ssh/sshd_config
+  - name: oraclelinux-9
+    driver:
+      run_command: /usr/lib/systemd/systemd
+      provision_command:
+        - dnf -y install crypto-policies-scripts procps-ng
+        - update-crypto-policies --set DEFAULT:SHA1
+        - echo "PubkeyAcceptedAlgorithms +ssh-rsa" | tee -a /etc/ssh/sshd_config
   - name: rockylinux-8
   - name: oraclelinux-8
-  - name: oraclelinux-7
-  - name: rockylinux-8
+  - name: ubuntu-24.04
+    driver:
+      run_command: /lib/systemd/systemd
+      provision_command:
+        - echo "PubkeyAcceptedAlgorithms +ssh-rsa" | tee -a /etc/ssh/sshd_config
   - name: ubuntu-22.04
     driver:
       run_command: /lib/systemd/systemd
       provision_command:
         - echo "PubkeyAcceptedAlgorithms +ssh-rsa" | tee -a /etc/ssh/sshd_config
-  - name: ubuntu-21.10
-    driver:
-      run_command: /lib/systemd/systemd
   - name: ubuntu-20.04
     driver:
       run_command: /lib/systemd/systemd
-  - name: ubuntu-18.04
-    driver:
-      run_command: /lib/systemd/systemd
-  - name: photon-3
-    driver:
-      image: photon:3.0
-      provision_command:
-        - tdnf -y install rpm procps-ng coreutils gawk
-        - echo "PubkeyAcceptedKeyTypes +ssh-rsa" | tee -a /etc/ssh/sshd_config
-        - sed -ie 's/PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
-        - systemctl enable sshd.service
   - name: photon-4
     driver:
       image: photon:4.0
       provision_command:
-        - tdnf -y install rpm procps-ng coreutils gawk
+        - tdnf -y install rpm procps-ng coreutils gawk systemd
+        - echo "PubkeyAcceptedKeyTypes +ssh-rsa" | tee -a /etc/ssh/sshd_config
+        - sed -ie 's/PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
+        - systemctl enable sshd.service
+  - name: photon-5
+    driver:
+      image: photon:5.0
+      provision_command:
+        - tdnf -y install rpm procps-ng coreutils gawk systemd
         - echo "PubkeyAcceptedKeyTypes +ssh-rsa" | tee -a /etc/ssh/sshd_config
         - sed -ie 's/PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
         - systemctl enable sshd.service
 
 suites:
-  - name: git-3003
-    provisioner:
-      salt_version: v3003
-      salt_bootstrap_options: -x python3 -MPfq git %s
-  - name: git-3004
-    provisioner:
-      salt_version: v3004
-      salt_bootstrap_options: -x python3 -MPfq git %s
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
-      - debian-11
-      - arch
-      - gentoo
-      - gentoo-systemd
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: git-3005
-    provisioner:
-      salt_version: v3005
-      salt_bootstrap_options: -x python3 -MPfq git %s
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
-      - debian-11
-      - arch
-      - gentoo
-      - gentoo-systemd
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
   - name: git-3006
     provisioner:
       salt_version: v3006
@@ -204,12 +168,10 @@ suites:
       - opensuse-15
       - opensuse-tumbleweed
       - debian-11
+      - debian-12
       - arch
       - gentoo
       - gentoo-systemd
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
   - name: git-3006x
     provisioner:
       salt_version: 3006.x
@@ -218,100 +180,32 @@ suites:
       - opensuse-15
       - opensuse-tumbleweed
       - debian-11
+      - debian-12
       - arch
       - gentoo
       - gentoo-systemd
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: old-stable-3003-0
+  - name: git-3007
     provisioner:
-      salt_version: 3003
-      salt_bootstrap_options: -x python3 -MP old-stable 3003.0
+      salt_version: v3007
+      salt_bootstrap_options: -x python3 -MPfq git %s
     excludes:
       - opensuse-15
       - opensuse-tumbleweed
+      - debian-11
       - arch
       - gentoo
       - gentoo-systemd
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
-      - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: old-stable-3003
+  - name: git-3007x
     provisioner:
-      salt_version: 3003
-      salt_bootstrap_options: -x python3 -MP old-stable %s
+      salt_version: 3007.x
+      salt_bootstrap_options: -x python3 -MPfq git %s
     excludes:
       - opensuse-15
       - opensuse-tumbleweed
-      - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: old-stable-3004-0
-    provisioner:
-      salt_version: 3004
-      salt_bootstrap_options: -x python3 -MP old-stable 3004.0
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
+      - debian-11
       - arch
       - gentoo
       - gentoo-systemd
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: old-stable-3004
-    provisioner:
-      salt_version: 3004
-      salt_bootstrap_options: -x python3 -MP old-stable %s
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
-      - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: old-stable-3005
-    provisioner:
-      salt_version: 3005
-      salt_bootstrap_options: -x python3 -MP old-stable %s
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
-      - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: stable-3005
-    provisioner:
-      salt_version: 3005
-      salt_bootstrap_options: -x python3 -MP stable %s
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
-      - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: stable-3005-1
-    provisioner:
-      salt_version: 3005.1
-      salt_bootstrap_options: -x python3 -MP stable %s
-    excludes:
-      - opensuse-15
-      - opensuse-tumbleweed
-      - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
   - name: stable-3006
     provisioner:
       salt_version: 3006
@@ -320,20 +214,30 @@ suites:
       - opensuse-15
       - opensuse-tumbleweed
       - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
-  - name: stable-3006-1
+  - name: stable-3006-8
     provisioner:
-      salt_version: 3006.1
+      salt_version: 3006.8
       salt_bootstrap_options: -x python3 -MP stable %s
     excludes:
       - opensuse-15
       - opensuse-tumbleweed
       - arch
-      - freebsd-131
-      - freebsd-123
-      - openbsd-6
+  - name: stable-3007
+    provisioner:
+      salt_version: 3007
+      salt_bootstrap_options: -x python3 -MP stable %s
+    excludes:
+      - opensuse-15
+      - opensuse-tumbleweed
+      - arch
+  - name: stable-3007-1
+    provisioner:
+      salt_version: 3007.1
+      salt_bootstrap_options: -x python3 -MP stable %s
+    excludes:
+      - opensuse-15
+      - opensuse-tumbleweed
+      - arch
   - name: git-master
     provisioner:
       salt_version: master
@@ -359,43 +263,27 @@ suites:
       salt_version: latest
       salt_bootstrap_options: -MP onedir %s
 
-  - name: onedir-3005
-    provisioner:
-      salt_version: 3005
-      salt_bootstrap_options: -MP onedir %s
-
   - name: onedir-3006
     provisioner:
       salt_version: 3006
       salt_bootstrap_options: -MP onedir %s
 
-  - name: onedir-rc-3006-0rc2
+  - name: onedir-3007
     provisioner:
-      salt_version: 3006.0rc2
-      salt_bootstrap_options: -R staging.repo.saltproject.io -MP onedir_rc %s
-    excludes:
-      - arch
-      - freebsd-131
-      - freebsd-123
-      - gentoo
-      - openbsd-6
-      - opensuse-15
-      - opensuse-tumbleweed
-      - ubuntu-1804
+      salt_version: 3007
+      salt_bootstrap_options: -MP onedir %s
 
-  - name: onedir-rc-3006-0rc1
+  - name: onedir-rc-3008-0rc1
     provisioner:
-      salt_version: 3006.0rc1
+      salt_version: 3008.0rc1
       salt_bootstrap_options: -R staging.repo.saltproject.io -MP onedir_rc %s
     excludes:
       - arch
-      - freebsd-131
-      - freebsd-123
       - gentoo
-      - openbsd-6
       - opensuse-15
       - opensuse-tumbleweed
-      - ubuntu-1804
+      - ubuntu-2004
+      - ubuntu-2204
 
   - name: quickstart
     provisioner:

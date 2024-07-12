@@ -1,3 +1,35 @@
+# v2024.07.12
+
+## What's Changed
+
+- Add script version to powershell script by @twangboy in https://github.com/saltstack/salt-bootstrap/pull/1996
+- Add support for mint-21 by @jhubbardnso in https://github.com/saltstack/salt-bootstrap/pull/1997
+- Added support for Amazon 2023, Debian 12, Ubuntu 24.04, removed EOL and BSD OSs and Python 2.7 support by @dmurphy18 in https://github.com/saltstack/salt-bootstrap/pull/1987
+
+## New Contributors
+
+- @jhubbardnso made their first contribution in https://github.com/saltstack/salt-bootstrap/pull/1997
+
+**Full Changelog**: https://github.com/saltstack/salt-bootstrap/compare/v2024.04.03...v2024.07.12
+
+# v2024.07.11
+
+## What's Changed
+
+- Migrated to using GitHub Actions
+- Removed support of End-Of-Life OS's, for example: Debian 7, 8, 9 & 10, RHEL 7
+- Removed support for FreeBSD and OpenBSD
+- Removed support for Solaris and it's derivatives
+- Removed support for EOL Salt releases, pre-3006
+- Added support for new OS's, for example: Ubuntu 24.04, Debian 12, Amazon 2023
+- Updated to minimum Python 3.10 version from 3.9
+- Removed '-y' option which was experimental and only on RHEL 7 or less which are now EOL
+- Updated to current stable version of Ruby v3.3.4
+- Removed git-master support for Photon 4 & 5 due to gcc errors building salt.
+- Add support for Arm64 for MacOS
+
+**Full Changelog**: https://github.com/saltstack/salt-bootstrap/compare/v2024.04.03...v2024.07.11
+
 # v2024.04.03
 
 ## What's Changed
